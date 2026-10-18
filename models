@@ -1,0 +1,41 @@
+<?php
+require_once __DIR__ . "/dbConfig.php";
+
+function addApplication($pdo, $data) {
+    $sql = "INSERT INTO game_applications
+    (first_name, last_name, email, phone, game_role,
+    experience_level, programming_languages, game_projects, certifications)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt = $pdo->prepare($sql);
+    return $stmt->execute($data);
+}
+
+function getApplications($pdo) {
+    $stmt = $pdo->query("SELECT * FROM game_applications ORDER BY id DESC");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getApplication($pdo, $id) {
+    $stmt = $pdo->prepare("SELECT * FROM game_applications WHERE id = ?");
+    $stmt->execute([$id]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+function editApplication($pdo, $data) {
+    $sql = "UPDATE game_applications SET
+    first_name = ?, last_name = ?, email = ?, phone = ?,
+    game_role = ?, experience_level = ?, programming_languages = ?,
+    game_projects = ?, certifications = ?
+    WHERE id = ?";
+
+    $stmt = $pdo->prepare($sql);
+    return $stmt->execute($data);
+}
+
+function removeApplication($pdo, $id) {
+    $stmt = $pdo->prepare("DELETE FROM game_applications WHERE id = ?");
+    return $stmt->execute([$id]);
+}
+?>
