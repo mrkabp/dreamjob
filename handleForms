@@ -1,0 +1,38 @@
+<?php
+require_once __DIR__ . "/models.php";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $action = $_POST["action"] ?? "";
+
+    if ($action == "add" || $action == "edit") {
+        $languages = $_POST["programming_languages"] ?? [];
+        $programming_languages = implode(", ", $languages);
+
+        $data = [
+            trim($_POST["first_name"] ?? ""),
+            trim($_POST["last_name"] ?? ""),
+            trim($_POST["email"] ?? ""),
+            trim($_POST["phone"] ?? ""),
+            $_POST["game_role"] ?? "",
+            $_POST["experience_level"] ?? "",
+            $programming_languages,
+            trim($_POST["game_projects"] ?? ""),
+            trim($_POST["certifications"] ?? "")
+        ];
+
+        if ($action == "add") {
+            addApplication($pdo, $data);
+        } else {
+            $data[] = (int)($_POST["id"] ?? 0);
+            editApplication($pdo, $data);
+        }
+    }
+
+    if ($action == "delete") {
+        removeApplication($pdo, (int)($_POST["id"] ?? 0));
+    }
+
+    header("Location: ../index.php");
+    exit;
+}
+?>
